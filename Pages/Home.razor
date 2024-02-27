@@ -1,0 +1,34 @@
+@page "/"
+@using Microsoft.AspNetCore.Components.QuickGrid
+@using Models
+@inject HttpClient Http
+
+<PageTitle>Home</PageTitle>
+
+<h1>Hello, Carlos!</h1>
+
+Welcome to your new app.
+
+@if (results == null)
+{
+    <p>No Todo Pokemon found.</p>
+}
+else
+{
+    <QuickGrid Items="@results.results.AsQueryable()">
+        <PropertyColumn Property="@(p => p.Name)" Sortable="true" />
+        <TemplateColumn Title="Url">
+            <a href="@context.Url">@context.Url</a>
+        </TemplateColumn>
+    </QuickGrid>
+}
+
+
+
+@code {
+    PokemonResults? results;
+
+    protected override async Task OnInitializedAsync() => 
+        results = await Http.GetFromJsonAsync<PokemonResults>("pokemon?limit=100&offset=0");
+
+}
